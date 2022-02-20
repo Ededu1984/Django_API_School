@@ -3,34 +3,27 @@ from django.urls import path,include
 from school.views import StudentsViewSet, CoursesViewSet, EnrollmentsViewSet, ListEnrollmentsStudent, ListStudentsEnrollments
 from rest_framework import routers
 from rest_framework import permissions
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-
-
-schema_view = get_schema_view(
-   openapi.Info(
-      title="school",
-      default_version='v1',
-      description="Store data from a school that provides courses in IT segment",
-      terms_of_service="#",
-      contact=openapi.Contact(email="edson.costa@hotmail.com"),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
-   permission_classes=[permissions.AllowAny],
-)
-
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView,)
 
 router = routers.DefaultRouter()
 router.register('students', StudentsViewSet, basename='Students')
 router.register('courses', CoursesViewSet, basename='Courses')
 router.register('enrollments', EnrollmentsViewSet, basename='Enrollments')
 
+
 urlpatterns = [
+    # Admin page
     path('admin/', admin.site.urls),
+    # Documentation
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    # Other endpoints
     path('', include(router.urls) ),
     path('student/<int:pk>/enrollments/', ListEnrollmentsStudent.as_view() ),
     path('course/<int:pk>/enrollments/', ListStudentsEnrollments.as_view() ),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    # Authentication
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

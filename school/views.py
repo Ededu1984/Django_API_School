@@ -16,14 +16,14 @@ class CoursesViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
 class EnrollmentsViewSet(viewsets.ModelViewSet):
     """Showing all enrollments"""
     queryset = Enrollment.objects.all()
     serializer_class = EnrollmentSerializer
     authentication_classes = [BasicAuthentication]
-    permission_classes = [IsAuthenticated]
+    #permission_classes = [IsAuthenticated]
 
 class ListEnrollmentsStudent(generics.ListAPIView):
     """Showing the enrollments of the students"""
